@@ -3,8 +3,10 @@
 一些汉字表
 some database of Hanzi
 
+##  笔画
+bihua.txt
+
 ## 下一步
-* 笔画
 * 部件
 * 独体字
 * 变字
