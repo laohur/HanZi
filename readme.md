@@ -6,8 +6,10 @@ some database of Hanzi
 ##  笔画
 bihua.txt
 
+## 部件
+bujian.txt
+
 ## 下一步
-* 部件
 * 独体字
 * 变字
 * 拆字表
