@@ -15,8 +15,11 @@ bujian.txt
 dutizi.txt
 813个
 
+## 异体字
+varriants.txt
+43750个
+
 ## 下一步
-* 变字
 * 拆字表
 * 常用字
 * 基字
