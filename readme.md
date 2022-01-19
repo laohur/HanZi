@@ -5,12 +5,17 @@ some database of Hanzi
 
 ##  笔画
 bihua.txt
+36个
 
 ## 部件
 bujian.txt
+1123个
+
+## 独体字
+dutizi.txt
+813个
 
 ## 下一步
-* 独体字
 * 变字
 * 拆字表
 * 常用字
