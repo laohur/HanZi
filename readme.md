@@ -33,7 +33,7 @@ changyongzi.txt
 
 ## 基字表
 jizi.txt
-8020字
+9683字
 
 ## 合字
 94283字

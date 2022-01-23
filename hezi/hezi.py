@@ -63,6 +63,7 @@ with open("base.txt", "w") as f:
     for x in base0:
         f.write(x+'\n')
 print(set(base0)-JiZi)
+print(JiZi-set(base0))
 
 chars = list(dic0)
 chars.sort()
