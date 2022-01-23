@@ -29,7 +29,7 @@ chaizi.txt
 
 ## 常用字
 changyongzi.txt
-6980字
+8664字
 
 ## 基字表
 jizi.txt
