@@ -24,7 +24,7 @@ varriants.txt
 43750个
 
 ## 拆字表
-ids.txt
+chaizi.txt
 88937个
 
 ## 常用字
