@@ -25,7 +25,7 @@ for l in YiTiZi:
     a = '𱌪'
     b = '𱌛'
     if a in l or b in l:
-        d=0
+        d = 0
     w = l.split('\t')
     if len(w) != 2:
         continue
@@ -68,5 +68,5 @@ chars = list(dic0)
 chars.sort()
 with open("hezi.txt", "w") as f:
     for x in chars:
-        l = '\t'.join(dic0[x])
+        l = f"{x}\t{dic0[x]}"
         f.write(l+'\n')
