@@ -9,7 +9,7 @@ bihua.txt
 
 ## 部件
 bujian.txt
-1123个
+1362个
 
 ## 独体字
 dutizi.txt
@@ -17,23 +17,27 @@ dutizi.txt
 
 ## 元字表
 yuanzi.txt
-1385个
+1604个
 
 ## 异体字
-varriants.txt
+yitizi.txt
 43750个
 
 ## 拆字表
 chaizi.txt
-88937个
+94257个
 
 ## 常用字
+changyongzi.txt
 6980字
 
-* 基字表
-7802字
+## 基字表
+jizi.txt
+8020字
+
+## 合字
+94283字
 
 ## 下一步
-* 合字
 * 汉字属性表
 * 汉字排序（暂以unicode排序，应以笔画、部件、独体字、合字以部首部件排序）

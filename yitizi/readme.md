@@ -1,6 +1,6 @@
 # 异体字
 
-varriants.txt
+yitizi.txt
 
 
 ## 来源1
