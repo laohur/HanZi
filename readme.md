@@ -15,6 +15,10 @@ bujian.txt
 dutizi.txt
 813个
 
+## 元字表
+yuanzi.txt
+1385个
+
 ## 异体字
 varriants.txt
 43750个
