@@ -17,15 +17,15 @@ dutizi.txt
 
 ## 元字表
 yuanzi.txt
-1393个
+1393字
 
 ## 异体字
 yitizi.txt
-43750个
+43750字
 
 ## 拆字表
 chaizi.txt
-93924个
+93924字
 
 ## 常用字
 changyongzi.txt
