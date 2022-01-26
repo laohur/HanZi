@@ -2,6 +2,10 @@
 
 ids.txt
 
+## 拆字原则
+只是拆一级
+
+
 ## 来源1
 https://github.com/kitty-panics/unicode-cjk-ids/blob/master/CJK-All.txt
 

@@ -1,28 +1,63 @@
 
+JieGou = "⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻"
+JieGou2 = "⿰⿱⿴⿵⿶⿷⿸⿹⿺⿻"
+JieGou3 = "⿲⿳"
+
+
+def valid_ids(seq):
+    # print(seq)
+    if len(seq) == 1:
+        return 1
+    if len(seq) == 0 or len(seq) == 2:
+        return 0
+    for i in range(len(seq)-1, -1, -1):
+        if seq[i] not in JieGou:
+            continue
+        if seq[i] in JieGou2:
+            if i+2 > len(seq)-1:
+                return 0
+            s = seq[:i]+"*"
+            if i+2 < len(seq)-1:
+                s += seq[i+3:]
+            return valid_ids(s)
+        if seq[i] in JieGou3:
+            if i+3 > len(seq)-1:
+                return 0
+            s = seq[:i]+'*'
+            if i+3 < len(seq)-1:
+                s += seq[i+4:]
+            return valid_ids(s)
+    return 0
+
+
+print(valid_ids('⿱艹⿳⿲止自巳八夂'))
+
+
 def read_ids(path):
     doc = []
-    with open(path, encoding="utf-8") as f:
-        # U+6717	朗	⿰⿱丶⑤月[GTJV]	⿰良月[K]
-        for line in f:
-            if not line or not line.startswith('U+'):
-                continue
-            line = line.strip()
-            # line="U+2EBC9\t𮯉\t⿰齒⿱人米\t⿰齒籴"
-            tokens = line.split('\t')
-            char = tokens[1]
-            metas = [x.split('[')[0] for x in tokens[2:]]
-            metas.sort(key=lambda x: len(x))
-            doc.append([char, metas])
+    # U+6717	朗	⿰⿱丶⑤月[GTJV]	⿰良月[K]
+    for line in open(path).read().splitlines():
+        if not line or not line.startswith('U+'):
+            continue
+        line = line.strip()
+        # line="U+2EBC9\t𮯉\t⿰齒⿱人米\t⿰齒籴"
+        tokens = line.split('\t')
+        k = tokens[1]
+        seqs = [x.split('[')[0] for x in tokens[2:]]
+        seqs = [x for x in seqs if valid_ids(x)]
+        seqs.sort(key=lambda x: len(x))
+        if not seqs:
+            v = k
+        else:
+            v = seqs[0]
+        doc.append([k, v])
     return doc
 
 
 doc = read_ids("ids.txt")
 print(len(doc), doc[0])
 
-ids0 = {}
-for cols in doc:
-    k, v = cols[:2]
-    ids0[k] = v[0]
+ids0 = {k: v for k, v in doc}
 
 
 def read_ids2(path):
@@ -34,18 +69,18 @@ def read_ids2(path):
         # 与	⿹⿺㇉一一(.);⿻[b]⿺㇉一一(J);⿹⿺㇉一丨(qgs);⿺𠚣一(qzp);⿹⿺𠃑一丨(qzs)
         w = l.split()
         k = w[0]
-        v = w[1].split('(')[0]
-        v = v.split(';')[0]
-        if v == '#':
+        seqs = w[1].split(";")
+        seqs = [x.split('(')[0] for x in seqs]
+        seqs = [x for x in seqs if min(ord(y) for y in x) > 128]
+        seqs = [x for x in seqs if valid_ids(x)]
+        seqs.sort(key=lambda x: len(x))
+        if not seqs:
             v = k
-        # v = ''
-        # for x in w[1]:
-        #     if ord(x) >= 128:
-        #         v += x
-        #     else:
-        #         break
-        # if not v:
-        #     v = k
+            # continue
+        else:
+            v = seqs[0]
+        if len(v) <= 1:
+            v = k
         doc.append((k, v))
     return doc
 
@@ -53,34 +88,39 @@ def read_ids2(path):
 doc = read_ids2("ids_lv2.txt")
 print(len(doc), doc[0])
 
-# ids0 = {}
 for k, v in doc:
-    if min(ord(x) for x in v) > 128:
-        if k not in ids0:
-            ids0[k] = v
-        elif len(ids0[k]) > len(v):
-            if len(v) == 1:
-                print("l2", k, ids0[k], v)
-            ids0[k] = v
+    if ord(k) <= 128:
+        continue
+    if k not in ids0:
+        ids0[k] = v
+        # print("字形增", k, v)
+    elif len(ids0[k]) > len(v) >= 3:
+        ids0[k] = v
 
 ZiXing = open("zixing.txt").read().splitlines()
 for l in ZiXing:
-    w = l.split()
+    if '偺' in l:
+        d = 0
+    w = l.split('\t')
     if not w:
         continue
-    if len(w) == 1:
+    if len(w) <= 1:
         k = w[0]
         v = k
     if len(w) >= 2:
         k, v = w[:2]
-    if "？" in v or len(v) < 3:
+    if "？" in v:
         continue
+    if not valid_ids(v):
+        # continue
+        v = k
     if k not in ids0:
         ids0[k] = v
-        print("字形", k, v)
-    # elif len(ids0[k]) > len(v) >= 3:
-    #     print("字形", k, ids0[k], v)
-    #     ids0[k] = v
+        print("字形增", k, v)
+    elif len(ids0[k]) > len(v) >= 3:
+        # if min(ord(x) for x in ids0[k]) < ord("⺀"):
+        print("字形替", k, ids0[k], valid_ids(ids0[k]), v, valid_ids(v))
+        ids0[k] = v
 
 
 def get_bujians(dic):
