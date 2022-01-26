@@ -67,7 +67,7 @@ def read_ids2(path):
         if not l:
             continue
         # 与	⿹⿺㇉一一(.);⿻[b]⿺㇉一一(J);⿹⿺㇉一丨(qgs);⿺𠚣一(qzp);⿹⿺𠃑一丨(qzs)
-        w = l.split()
+        w = l.split("\t")
         k = w[0]
         seqs = w[1].split(";")
         seqs = [x.split('(')[0] for x in seqs]
