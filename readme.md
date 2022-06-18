@@ -4,38 +4,40 @@
 some database of Hanzi
 
 ##  笔画
-bihua.txt
+BiHua.txt
 36个
 
 ## 部件
-bujian.txt
+BuJian.txt
 1386个
 
 ## 独体字
-dutizi.txt
+DuTiZi.txt
 813个
 
 ## 元字表
-yuanzi.txt
+YuanZi.txt
 1629字
 
 ## 异体字
-yitizi.txt
+YiTiZi.txt
 43750字
 
 ## 拆字表
-chaizi.txt
+ChaiZi.txt
 94265字
+拆分至下一级
 
 ## 常用字
-changyongzi.txt
+ChangYongZi.txt
 8664字
 
 ## 基字表
-jizi.txt
+JiZi.txt
 9707字
 
 ## 合字
+HeZi.txt
 94283字
 
 ## 下一步
