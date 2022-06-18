@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     bujian = ''.join(bujian)
     print(len(bujian))
-    with open("bujian.txt", "w") as f:
+    with open("BuJian.txt", "w") as f:
         for x in bujian:
             f.write(x+'\n')
 

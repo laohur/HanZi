@@ -97,7 +97,7 @@ for k, v in doc:
     elif len(ids0[k]) > len(v) >= 3:
         ids0[k] = v
 
-ZiXing = open("zixing.txt").read().splitlines()
+ZiXing = open("ZiXing.txt").read().splitlines()
 for l in ZiXing:
     if '偺' in l:
         d = 0
@@ -138,7 +138,7 @@ def get_bujians(dic):
 bujians = get_bujians(ids0)
 print(bujians)
 
-YuanZi = open("../yuanzi/yuanzi.txt").read().splitlines()
+YuanZi = open("../YuanZi/YuanZi.txt").read().splitlines()
 YuanZi = set(x for x in YuanZi if x)
 
 ChaiZi = []
@@ -148,7 +148,7 @@ for k, v in ids0.items():
     ChaiZi.append((k, v))
 ChaiZi.sort(key=lambda x: x[0])
 
-with open("chaizi.txt", "w") as f:
+with open("ChaiZi.txt", "w") as f:
     for x in ChaiZi:
         r = '\t'.join(x)
         f.write(r+'\n')
