@@ -8,3 +8,4 @@ JiZi.sort()
 with open("JiZi/JiZi.txt", "w") as f:
     for x in JiZi:
         f.write(x+'\n')
+print(len(JiZi))
