@@ -4,7 +4,7 @@ JieGou = '〾⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻'
 # for x in JieGou:
 # print(ord(x))
 
-star = "𱊮熇"[1]
+star = "𱊮"
 
 
 def slim(v):
@@ -31,12 +31,14 @@ def loadHeZi(path, lite=True):
     return HeZi
 
 
-# path = "HeZi/He2Ji.txt"
-path = "HeZi/He2Yuan.txt"
-HeZi = loadHeZi(path)
+He2Yuan = loadHeZi("HeZi/He2Yuan.txt")
+He2Ji = loadHeZi("HeZi/He2Ji.txt")
 
-print(star, HeZi.get(star, star))
-"""
-𱊮 ⿵亡鳥
-𱊮 ⿵亡鳥
-"""
+if __name__ == "__main__":
+
+    print(star, He2Yuan.get(star, star))
+    print(star, He2Ji.get(star, star))
+    """
+    𱊮 ⿵亡鳥
+    𱊮 ⿵亡鳥
+    """
