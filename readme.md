@@ -9,7 +9,7 @@ BiHua.txt
 
 ## 部件
 BuJian.txt
-1217个
+1091个
 
 ## 独体字
 DuTiZi.txt
@@ -18,7 +18,7 @@ DuTiZi.txt
 ## 元字表
 为笔划、部件、独体字并集
 YuanZi.txt
-1590字
+1536字
 
 ## 异体字
 YiTiZi.txt
@@ -26,7 +26,7 @@ YiTiZi.txt
 
 ## 拆字表
 ChaiZi.txt
-94281字
+94283字
 拆分至下一级
 
 
@@ -37,7 +37,7 @@ ChangYongZi.txt
 ## 基字表
 为元字、常用字并集
 JiZi.txt
-9668字
+9616字
 
 ## 合字
 HeZi.txt
