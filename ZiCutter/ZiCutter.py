@@ -1,11 +1,7 @@
 import unicodedata
 import os
-# from logzero import logger
-JieGou = '〾⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻'
-# for x in JieGou:
-# print(ord(x))
+from logzero import logger
 
-star = "𱊮"
 
 
 def slim(v):
@@ -34,16 +30,30 @@ def loadHeZi(path, lite=True):
     return HeZi,values
 
 
-class ZiCutter:
-    def __init__(self, HanZiBase=""):
-        self.HeZi = {}
-        self.vocab = []
+def gen_bigrams():
+    nums = ''.join(chr(i) for i in range(ord('0'), ord('9')+1))
+    az = ''.join(chr(i) for i in range(ord('a'), ord('z')+1))
+    alphabet = az+nums
+    az2 = [x+y for x in az for y in az]
+    nums2 = [x+y for x in nums for y in nums]
+    idxs= ["#"+x for x in alphabet]
+    words = list(alphabet)+az2+nums2+idxs
+    return words
 
-        if os.path.exists(HanZiBase):
-            HeZi,values = loadHeZi(HanZiBase)
-            print(f" ZiCutter {HanZiBase} --> loadHeZi {len(HeZi)} vocab:{len(values)}")
+class ZiCutter:
+    def __init__(self, HeZiBase=""):
+        """
+        HeZiBase="","Yuan","Ji"
+        """
+        self.HeZi = {}
+        grams2=gen_bigrams()
+        self.vocab = grams2
+        if os.path.exists(HeZiBase):
+            HeZi, values = loadHeZi(HeZiBase)
+            logger.info(
+                f" ZiCutter {HeZiBase} --> loadHeZi {len(HeZi)} vocab:{len(values)}")
             self.HeZi = HeZi
-            self.vocab = values
+            self.vocab += values
 
     def cutHan(self, zi, shrink=True):
         ids = self.HeZi.get(zi, zi)
@@ -77,6 +87,7 @@ class ZiCutter:
 
 
 if __name__ == "__main__":
+    star = "𱊮"
 
     He2Yuan,vocab = loadHeZi("HeZi/He2Yuan.txt")
     He2Ji,vocab = loadHeZi("HeZi/He2Ji.txt")
