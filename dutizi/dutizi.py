@@ -16,7 +16,7 @@ if __name__=="__main__":
     dutizi=list(set(dutizi))
     dutizi.sort()
     print(len(dutizi))
-    with open("dutizi.txt","w") as f:
+    with open("Dutizi/Dutizi.txt", "w") as f:
         for x in dutizi:
             f.write(x+'\n')
 
@@ -25,4 +25,4 @@ if __name__=="__main__":
 1 725
 2 403
 813
-"""            
+"""
