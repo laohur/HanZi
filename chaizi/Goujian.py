@@ -11,7 +11,7 @@ stars1 = set(stars1)
 stars2 = '𛂦𠦮𡋬𡰣𢚎𤣩𨪐𬼂𬼄𭔥乁𰀁'
 star = stars2[0]
 
-path="ChaiZi/Ids1.txt"
+path = "ChaiZi/ChaiZi.txt"
 doc=open(path).read().splitlines()
 doc=[x.split('\t') for x in doc]
 ids={k:v for k,v in doc}

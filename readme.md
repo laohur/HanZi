@@ -18,7 +18,7 @@ DuTiZi.txt
 ## 元字表
 为笔划、部件、独体字并集
 YuanZi.txt
-1536字
+1719字
 
 ## 异体字
 YiTiZi.txt
