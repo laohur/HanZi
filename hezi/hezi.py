@@ -83,7 +83,7 @@ def chai(JiZi: set, ChaiZi: list, YiTiZi: list):
     return dic0
 
 
-def build(JiZi, ChaiZiPath, YiTiZiPath,  HeZiPath, BasePath):
+def build(JiZi, ChaiZiPath, YiTiZiPath,  HeZiPath, JiZiPath):
     JiZi = [x for x in JiZi if x]
     JiZi = set(JiZi)
 
@@ -99,10 +99,10 @@ def build(JiZi, ChaiZiPath, YiTiZiPath,  HeZiPath, BasePath):
 
     logger.info(''.join(Base-JiZi))  #
     assert len(set(Base)-JiZi) == 0
-    
-    Base=list(Base)
+
+    Base = list(Base)
     Base.sort()
-    with open(BasePath, "w") as f:
+    with open(JiZiPath, "w") as f:
         for x in Base:
             f.write(x+'\n')
 
@@ -117,10 +117,10 @@ def build(JiZi, ChaiZiPath, YiTiZiPath,  HeZiPath, BasePath):
 if __name__ == "__main__":
     # JiZi = open("YuanZi/YuanZi.txt").read().splitlines()
     # build(JiZi, ChaiZiPath="ChaiZi/ChaiZi.txt", YiTiZiPath="YiTiZi/YiTiZi.txt",
-    #       HeZiPath="HeZi/He2Yuan.txt", BasePath="HeZi/YuanZi.txt")
+    #       HeZiPath="HeZi/He2Yuan.txt", JiZiPath="HeZi/YuanZi.txt")
     JiZi = open("JiZi/JiZi.txt").read().splitlines()
     build(JiZi, ChaiZiPath="ChaiZi/ChaiZi.txt", YiTiZiPath="YiTiZi/YiTiZi.txt",
-          HeZiPath="HeZi/He2Ji.txt", BasePath="HeZi/JiZi.txt")
+          HeZiPath="HeZi/He2Ji.txt", JiZiPath="HeZi/JiZi.txt")
 
 
 """
