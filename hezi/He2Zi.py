@@ -2,6 +2,7 @@ from logzero import logger
 from UnicodeTokenizer import UnicodeTokenizer
 
 star = '㢿'
+star = '#'
 
 """
     𤍽	𤑔 k,v  异体字\t本体字
@@ -42,6 +43,7 @@ def split(dic0: dict, JiZi: set, YiTi: set, epoch=0):
     for k, v in dic0.items():
         if k == star:
             logger.info((k, v))
+
         if valid(v, JiZi):
             dic1[k] = v
             continue
@@ -58,7 +60,7 @@ def split(dic0: dict, JiZi: set, YiTi: set, epoch=0):
             dic1[k] = u
             continue
 
-        u = ''.join(dic0[x] for x in v)
+        u = ''.join(dic0.get(x, x) for x in v)
         dic1[k] = u
 
     base0 = set(''.join(x for x in dic0.values()))
@@ -87,14 +89,14 @@ def chai(JiZi: set, ChaiZi: list, YiTiZi: list):
 
     giveup = ''.join(giveup)
     #  giveup:148 αℓ↔↷①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑲△いよりコサヨ㤙凫叏囙嬝嬽岛島捣搗枭梟槝蟂袅裊鄡不女﨩？𛂦𠄏𠑼𠒎𠗦𠝷𠩳𠪕𠳧𡀮𡆢𡋬𡏭𡑩𡖣𡙞𡚇𡠿𡭳�𡻅𢆴𢇭𢍴𢏻𢳚𣀴𣘖𣚝𣤝𣥒𣹋𣻴𤆿��𤟨𤡔𤤏𥅤𥉼𥦪𦃭𦆚𦚀𦣩𦥢𦬝𦮙𦳓𧒬𧙊𨥻𩓆𩡧𩤷𪜭𪵕𫋇𫌈𫮖𫽐𫽲𬂔𬇼𬔨𬵈𬻑𬻘𬻞𬻥𭁐𭄩𭇩𭔥𭖀𭖲𭗃𭚡𭥟𭬢𭮴𭱃𭱽𭲰��𮎳𮒮𮬁𮭹乁凵㠯𰅜𰒥𰙌𰜬𰨇𰳞𰻮�
-    logger.info(f"giveup:{len(giveup)} {giveup}") 
+    logger.info(f"giveup:{len(giveup)} {giveup}")
     dic0 = {k: v for k, v in dic1.items() if k and v}
     return dic0
 
 
 def build(JiZi, ChaiZiPath, YiTiZiPath,  HeZiPath, JiZiPath):
     JiZi = [x for x in JiZi if x]
-    JiZi = set(x for x in JiZi)
+    JiZi = set(JiZi)
 
     doc = open(YiTiZiPath).read().splitlines()
     YiTiZi = [x.split('\t') for x in doc]
@@ -108,8 +110,8 @@ def build(JiZi, ChaiZiPath, YiTiZiPath,  HeZiPath, JiZiPath):
     Base = set(''.join(slim(x) for x in HeZi.values()))
 
     diff = Base-JiZi
-    logger.info((len(JiZi),len(Base),len(diff)))  # (1719, 1719, 0)
-    logger.info(''.join(diff))  # 
+    logger.info((len(JiZi), len(Base), len(diff)))  # (1719, 1719, 0)
+    logger.info(''.join(diff))  #
     assert len(diff) == 0
 
     Base = list(Base)
