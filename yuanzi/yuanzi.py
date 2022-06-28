@@ -1,10 +1,19 @@
+from logzero import logger
+from UnicodeTokenizer.UnicodeTokenizer import detect_hanzi
+
+
 def merge(files):
     doc = []
     for x in files:
         a = open(x).read().splitlines()
         doc += a
     doc = [x for x in doc if x]
-    Ji = set(doc)
+    Ji = set()
+    for x in doc:
+        if detect_hanzi(x):
+            Ji.add(x)
+        else:
+            logger.warning(x)
     print(len(Ji))
     return Ji
 
@@ -38,10 +47,12 @@ path = "YuanZi/YuanZiIds.txt"
 save(JiZiIds, path)
 
 """
-1719
-1773
-54 αℓ↔↷①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑲△いよりコサ全車龜龜丹女年華龜？𛂦𠦮𡋬𢚎𭔥乁凵北卑及多尢㠯衣豕𰀁
-1719
-1773
+[W 220629 01:32:29 YuanZi:16] �
+1717
+[W 220629 01:32:29 YuanZi:16] �
+1741
+24 全車龜龜丹女年華龜𠦮𡋬𢚎𭔥乁凵北卑及多尢㠯衣豕𰀁
+1717
+1741
 """
 
