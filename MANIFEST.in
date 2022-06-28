@@ -1,0 +1,4 @@
+include */*.txt
+# include Project/static/*
+# Note that the following line is required in setup.py
+# include_package_data = True

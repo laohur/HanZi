@@ -20,6 +20,6 @@ https://hanzi.unihan.com.cn/downloads/CJKDecomposed20080425V312%EF%BC%88CJK%E6%8
 拆分完成，可惜不知转化为unicode映射。
 
 ## 构建步骤
-收集归一 Collect.py
+拆分至基字 ChaiZi.py   拆分序列中，包含不在键字的非汉字字符
 产出构件 Goujian.py
-拆分至基字 ChaiZi.py
+
