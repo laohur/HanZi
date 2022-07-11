@@ -8,13 +8,10 @@ def merge(files):
         a = open(x).read().splitlines()
         doc += a
     doc = [x for x in doc if x]
-    Ji = set()
-    for x in doc:
-        if detect_hanzi(x):
-            Ji.add(x)
-        else:
-            logger.warning(x)
-    print(len(Ji))
+    Ji = set(x for x in doc if detect_hanzi(x))
+    notHanzi = set(x for x in doc if not detect_hanzi(x))
+    logger.warning(''.join(notHanzi))
+    logger.info(len(Ji))
     return Ji
 
 
@@ -28,7 +25,7 @@ fresh = JiZiIds-JiZi
 fresh = list(fresh)
 fresh.sort()
 fresh = ''.join(fresh)
-print(len(fresh), fresh)
+logger.info((len(fresh), fresh))
 
 
 def save(JiZi, path):
@@ -39,20 +36,20 @@ def save(JiZi, path):
     with open(path, "w") as f:
         for x in JiZi:
             f.write(x+'\n')
-    print(len(JiZi))
+    logger.info(len(JiZi))
 
-path = "YuanZi/YuanZi.txt"  
+
+path = "YuanZi/YuanZi.txt"
 save(JiZi, path)
-path = "YuanZi/YuanZiIds.txt"  
+path = "YuanZi/YuanZiIds.txt"
 save(JiZiIds, path)
 
 """
-[W 220629 01:32:29 YuanZi:16] �
-1717
-[W 220629 01:32:29 YuanZi:16] �
-1741
-24 全車龜龜丹女年華龜𠦮𡋬𢚎𭔥乁凵北卑及多尢㠯衣豕𰀁
-1717
-1741
+[W 220712 04:11:06 YuanZi:13] �
+[I 220712 04:11:06 YuanZi:14] 1128
+[W 220712 04:11:06 YuanZi:13] �
+[I 220712 04:11:06 YuanZi:14] 1168
+[I 220712 04:11:06 YuanZi:28] (40, '全車龜龜丹女年卑既者辶華龜𠁧𠁾𠃉𠤬𠦮𡋬𡰣𢎗𢎜𢎧𢚎𤰃𬼂𬼄𭔥𮍌乁凵北卑及多尢㠯衣豕𰀁')
+[I 220712 04:11:06 YuanZi:39] 1128
+[I 220712 04:11:06 YuanZi:39] 1168
 """
-

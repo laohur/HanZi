@@ -1,6 +1,7 @@
 import random
 import collections
 from logzero import logger
+from UnicodeTokenizer.UnicodeTokenizer import detect_hanzi
 
 JieGou = "〾⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻"
 JieGou2 = "⿰⿱⿴⿵⿶⿷⿸⿹⿺⿻"
