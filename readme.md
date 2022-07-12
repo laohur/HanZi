@@ -12,49 +12,35 @@ as HanZi database of below
 
 
 ##  笔划
-BiHua.txt
-36个
+BiHua.txt 36
 
 ## 部件
-BuJian.txt
-914个
+BuJian.txt 914
 
 ## 独体字
-DuTiZi.txt
-740个
+DuTiZi.txt 740
 
 ## 元字表
 为笔划、部件、独体字并集
-YuanZi.txt
-1128字
+YuanZi.txt 1128
 
 ## 异体字
 YiTiZi.txt
 42514字
 
 ## 拆字表
-ChaiZi.txt
-94283字
-拆分至下一级
-
+ChaiZi.txt 94283
+GouJian.txt 1804
 
 ## 常用字
-ChangYongZi.txt
-8664字
-
-## 基字表
-为元字、常用字并集
-JiZi.txt
-9616字
+ChangYongZi.txt 8664
 
 ## 合字
-HeZi.txt
-94290字
+HeZi.txt 94290
 指定基字字典，拆分至基字(默认JiZi.txt)
 拆字原则：
 * 首先异体字转正
 * 若字在基字典中，不拆，否则拆分至基字典
-Base.txt 与 JiZi.txt 互相印证
 
 ## 下一步
 * 汉字属性表

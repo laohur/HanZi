@@ -10,7 +10,7 @@ JieGou3 = "⿲⿳"
 stars1 = 'αℓ↔↷①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑲△'
 stars1 = set(stars1)
 stars2 = '𠦮𡋬𡰣𢚎𤣩𨪐𬼄𭔥乁'
-star = '𦞝'
+star = '乌'
 
 
 def read_ids(path="ChaiZi/ids.txt"):
@@ -26,9 +26,7 @@ def read_ids(path="ChaiZi/ids.txt"):
         if k == star:
             logger.info(tokens)
         seqs = [x.split('[')[0] for x in tokens[2:]]
-        seqs = [x for x in seqs if x and x != k]
-        # seqs = [x for x in seqs if valid_ids(x)]
-        # seqs.sort(key=lambda x: seq_score(x))
+        seqs = [x for x in seqs if x]
         doc.append([k, seqs])
     return doc
 
@@ -48,11 +46,8 @@ def read_ids2(path="ChaiZi/ids_lv2.txt"):
             continue
         seqs = w[1].split(";")
         seqs = [x.split('(')[0] for x in seqs]
-        # seqs = [x for x in seqs if min(ord(y) for y in x) > 128]
         seqs = [''.join(x for x in s if ord(x) >= 128) for s in seqs]
-        seqs = [x for x in seqs if x and x != k]
-        # seqs = [x for x in seqs if valid_ids(x)]
-        # seqs.sort(key=lambda x: seq_score(x))
+        seqs = [x for x in seqs if x ]
         seqs = list(set(seqs))
         doc.append((k, seqs))
     return doc
@@ -67,7 +62,7 @@ def read_ZiXing(path="ChaiZi/ZiXing.txt"):
         if k == star:
             logger.info(w)
         seqs = w[1:]
-        seqs = [x for x in seqs if x and x != k]
+        seqs = [x for x in seqs if x ]
         seqs = list(set(seqs))
         doc.append((k, seqs))
     return doc
@@ -79,22 +74,16 @@ def odd(seq):
             return 1
     return 0
 
-
-def valid_ids(seq):
-    if len(seq) <= 2:
-        return 0
-    if seq[0] not in JieGou:
-        return 0
-    if seq[-1] in JieGou or seq[-2] in JieGou:
-        return 0
-    return 1
-
-
 def seq_score(seq):
-    v = valid_ids(seq)
-    o = odd(seq)
-    score = v*100-len(seq)-10*o
-    return score
+    if seq[-1] in JieGou or len(seq)>=2 and seq[-2] in JieGou:
+        return 0
+    if odd(seq):
+        return 1
+    if seq[0] not in JieGou:
+        return 2
+    if len(seq) <= 2:
+        return 3
+    return 4
 
 
 def merge(doc, path):
@@ -108,7 +97,7 @@ def merge(doc, path):
     for k, seqs in store.items():
         if k == star:
             logger.info((k, seqs))
-        seqs = [x for x in seqs if x and len(x) >= 2]
+        seqs = [x for x in seqs if x ]
         if len(seqs) >= 3:
             c = collections.Counter(seqs)
             # logger.info((k,seqs))
@@ -181,7 +170,7 @@ def choice(store, path):
 
 if __name__ == "__main__":
 
-    logger.info(valid_ids('⿱艹⿳⿲止自巳八夂'))
+    logger.info(seq_score('⿱艹⿳⿲止自巳八夂'))
 
     Ids = read_ids()
     logger.info((len(Ids), random.choice(Ids)))  # (88937, ['𦵀', ['⿱艹面']])
