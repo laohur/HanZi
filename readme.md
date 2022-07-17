@@ -30,17 +30,14 @@ YiTiZi.txt
 
 ## 拆字表
 ChaiZi.txt 94283
-GouJian.txt 1804
+GouJian.txt 2365
 
 ## 常用字
 ChangYongZi.txt 8664
 
 ## 合字
-HeZi.txt 94290
-指定基字字典，拆分至基字(默认JiZi.txt)
-拆字原则：
-* 首先异体字转正
-* 若字在基字典中，不拆，否则拆分至基字典
+HeZi.txt 93778/93746
+指定基字字典，拆分至基字
 
 ## 下一步
 * 汉字属性表
