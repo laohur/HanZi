@@ -1,7 +1,6 @@
 import collections
 
 from logzero import logger
-from UnicodeTokenizer.UnicodeTokenizer import detect_hanzi
 
 
 # 结构 12
@@ -80,8 +79,8 @@ GouJian = JieGou+BuShou+BuJian+more
 
 def pure(doc):
     doc = [x.strip() for x in doc if x.strip()]
-    bujian = set(x for x in doc if detect_hanzi(x))
-    Nbujian = ''.join(set(x for x in doc if not detect_hanzi(x)))
+    bujian = set(x for x in doc if ord(x)>10000)
+    Nbujian = ''.join(set(x for x in doc if ord(x)<10000))
 
     logger.warning(Nbujian)
     bujian = list(bujian)

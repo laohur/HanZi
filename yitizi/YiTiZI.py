@@ -1,18 +1,6 @@
 # -*- coding: utf-8 -*-
-from matplotlib import interactive
-import requests
-import csv
-import time
-import random
-import re
-import json
-import traceback
-from logzero import logger
 
 from logzero import logger
-
-from UnicodeTokenizer.UnicodeTokenizer import detect_hanzi
-
 
 star = '竜'
 

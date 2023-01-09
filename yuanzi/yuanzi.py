@@ -1,5 +1,4 @@
 from logzero import logger
-from UnicodeTokenizer.UnicodeTokenizer import detect_hanzi
 
 
 def merge(files):
@@ -8,8 +7,8 @@ def merge(files):
         a = open(x).read().splitlines()
         doc += a
     doc = [x for x in doc if x]
-    Ji = set(x for x in doc if detect_hanzi(x))
-    notHanzi = set(x for x in doc if not detect_hanzi(x))
+    Ji = set(x for x in doc if ord(x)>10000)
+    notHanzi = set(x for x in doc if ord(x)<10000)
     logger.warning(''.join(notHanzi))
     logger.info(len(Ji))
     return Ji

@@ -1,7 +1,5 @@
-import random
 import collections
 from logzero import logger
-from UnicodeTokenizer import UnicodeTokenizer
 
 
 JieGou = "〾⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻"
@@ -18,7 +16,7 @@ ids = {k: v for k, v in doc}
 
 
 isolate = ''.join(k for k, v in ids.items()
-                  if not v or k == v and UnicodeTokenizer.detect_hanzi(k))
+                  if not v or k == v and ord(k)>10000)
 logger.info(("isolate", len(isolate), ''.join(isolate)))
 
 

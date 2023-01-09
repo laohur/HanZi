@@ -1,7 +1,6 @@
 import random
 import collections
 from logzero import logger
-from UnicodeTokenizer import UnicodeTokenizer
 
 JieGou = "〾⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻"
 JieGou2 = "⿰⿱⿴⿵⿶⿷⿸⿹⿺⿻"
@@ -70,7 +69,7 @@ def read_ZiXing(path="ChaiZi/ZiXing.txt"):
 
 def odd(seq):
     for x in seq:
-        if not UnicodeTokenizer.detect_hanzi(x):
+        if ord(x)<10000:
             return 1
     return 0
 

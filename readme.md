@@ -6,7 +6,6 @@ some database of Hanzi
 ## usage
 as HanZi database of below
 
-* "UnicodeTokenizer"(https://github.com/laohur/UnicodeTokenizer)
 * "ZiCutter"(https://github.com/laohur/ZiCutter)
 * "ZiTokenizer"(https://github.com/laohur/ZiTokenizer)
 
