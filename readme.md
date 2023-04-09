@@ -11,31 +11,29 @@ as HanZi database of below
 
 
 ##  笔划
-BiHua.txt 36
+BiHua.txt  
 
 ## 部件
-BuJian.txt 914
+BuJian.txt  
 
 ## 独体字
-DuTiZi.txt 740
+DuTiZi.txt  
 
-## 元字表
+## 字根表
 为笔划、部件、独体字并集
-YuanZi.txt 1128
+ZiGen.txt  
 
 ## 异体字
 YiTiZi.txt
-42514字
-
+ 
 ## 拆字表
-ChaiZi.txt 94283
-GouJian.txt 2365
-
+ChaiZi.txt  
+ 
 ## 常用字
-ChangYongZi.txt 8664
+ChangYongZi.txt  
 
 ## 合字
-HeZi.txt 93778/93746
+HeZi.txt  
 指定基字字典，拆分至基字
 
 ## 下一步

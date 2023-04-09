@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from logzero import logger
 
 star = '䖵'
@@ -8,7 +10,7 @@ star = '䖵'
     HeZi[v]=HeZi[k] if k in v
 异体字 冃	帽
     """
-
+JieGou = "〾⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻"
 
 def valid(seq, Ji):
     for x in seq:
@@ -16,31 +18,14 @@ def valid(seq, Ji):
             return 0
     return 1
 
-def split(dic0: dict, JiZi: set, YiTi: set, epoch=0):
+def split(dic0: dict, JiZi: set,  epoch=0):
     dic1 = {}
     for k, v in dic0.items():
-        # if epoch >= 4 and star in v:
-        #     logger.info((k, v))
-
         if valid(v, JiZi):
             dic1[k] = v
-            continue
-
-        if epoch >= 4:
-            if k in YiTi:
-                u = YiTi[k]
-                u = dic0.get(u, u)
-                if valid(u, JiZi):
-                    dic1[k] = u
-                    continue
-
-        if epoch >= 5:
-            u = ''.join(YiTi.get(x, x) for x in v)
+        else:
+            u = ''.join(dic0.get(x, x) for x in v)
             dic1[k] = u
-            continue
-
-        u = ''.join(dic0.get(x, x) for x in v)
-        dic1[k] = u
 
     base0 = set(''.join(x for x in dic0.values()))
     base1 = set(''.join(x for x in dic1.values()))
@@ -48,21 +33,19 @@ def split(dic0: dict, JiZi: set, YiTi: set, epoch=0):
     return dic1
 
 
-def chai(JiZi: set, ChaiZi: list, YiTiZi: list):
+def chai(JiZi: set, ChaiZi: list, YiTi:dict):
     HeZi = {}
     for k, v in ChaiZi:
-        if ord(k)<10000:
-            continue
-        HeZi[k] = v
-
-    for x in JiZi:
-        HeZi[x] = x
-
-    YiTi = {k: v for k, v in YiTiZi}
+        if k in JiZi:
+            HeZi[k] = k
+        elif k in YiTi and YiTi[k] in JiZi:
+            HeZi[k] =  YiTi[k] 
+        else:
+            HeZi[k] = v
 
     dic0 = HeZi
-    for i in range(8):
-        dic1 = split(dic0, JiZi, YiTi, epoch=i)
+    for i in range(4):
+        dic1 = split(dic0, JiZi, epoch=i)
         dic0 = dic1
 
     dic1 = {}
@@ -77,8 +60,8 @@ def chai(JiZi: set, ChaiZi: list, YiTiZi: list):
         else:
             useless.append(k)
     giveup.sort()
-    logger.info(f"giveup v:{len(giveup)} {''.join(giveup)}")
-    logger.info(f"useless k:{len(useless)} {''.join(useless)}")
+    logger.info(f"giveup v:{len(giveup)} {''.join(giveup)[:1000]}")
+    logger.info(f"useless k:{len(useless)} {''.join(useless)[:1000]}")
     return dic1
 
 
@@ -88,10 +71,10 @@ def build(JiZi, ChaiZiPath, YiTiZiPath,  HeZiPath, JiZiPath):
 
     doc = open(YiTiZiPath).read().splitlines()
     YiTiZi = [x.split('\t') for x in doc]
+    YiTiZi={k:v for k,v in YiTiZi}
 
     doc = open(ChaiZiPath).read().splitlines()
     ChaiZi = [x.split('\t') for x in doc]
-    ChaiZi = [x for x in ChaiZi if ord(x[0])>10000]
 
     logger.info(f"JiZi:{len(JiZi)} ChaiZi:{len(ChaiZi)} YiTiZi:{len(YiTiZi)}")
     HeZi = chai(JiZi, ChaiZi, YiTiZi)
@@ -99,9 +82,9 @@ def build(JiZi, ChaiZiPath, YiTiZiPath,  HeZiPath, JiZiPath):
     Base = set(''.join(x for x in HeZi.values()))
     logger.info(f"HeZi:{len(HeZi)} Base:{len(Base)} ")
 
-    logger.info(f" JiZi-Base: {len(JiZi-Base)} {''.join(JiZi-Base)} ")
+    logger.info(f" JiZi-Base: {len(JiZi-Base)} {''.join(JiZi-Base)[:1000]} ")
     diff = Base-JiZi
-    logger.info(f"Base-JiZi:{len(diff)}  {''.join(diff)}")
+    logger.info(f"Base-JiZi:{len(diff)}  {''.join(diff)[:1000]}")
     assert len(diff) == 0
 
     Base = list(Base)
@@ -121,50 +104,38 @@ def build(JiZi, ChaiZiPath, YiTiZiPath,  HeZiPath, JiZiPath):
 
 
 if __name__ == "__main__":
-    JiZi = open("YuanZi/YuanZi.txt").read().splitlines()
+    JiZi = open("ZiGen/ZiGen.txt").read().splitlines()
     build(JiZi, ChaiZiPath="ChaiZi/ChaiZi.txt", YiTiZiPath="YiTiZi/YiTiZi.txt",
-          HeZiPath="HeZi/He2Yuan.txt", JiZiPath="HeZi/YuanZi.txt")
-    JiZi = open("ChaiZi/GouJian.txt").read().splitlines()
-    build(JiZi, ChaiZiPath="ChaiZi/ChaiZi.txt", YiTiZiPath="YiTiZi/YiTiZi.txt",
-          HeZiPath="HeZi/He2Ji.txt", JiZiPath="HeZi/JiZi.txt")
+          HeZiPath="HeZi/He2ZiGen.txt", JiZiPath="HeZi/ZiGen.txt")
+    # JiZi = open("ChaiZi/GouJian.txt").read().splitlines()
+    # build(JiZi, ChaiZiPath="ChaiZi/ChaiZi.txt", YiTiZiPath="YiTiZi/YiTiZi.txt",
+    #       HeZiPath="HeZi/He2Ji.txt", JiZiPath="HeZi/JiZi.txt")
 
 
 """
-sup="候侯𢀖枭島"
-
-[I 220717 23:34:02 He2Zi:99] JiZi:1128 ChaiZi:94235 YiTiZi:27440
-[I 220717 23:34:03 He2Zi:50] epoch:0 base:10733 --> 2698 
-[I 220717 23:34:04 He2Zi:50] epoch:1 base:2698 --> 1299 
-[I 220717 23:34:04 He2Zi:50] epoch:2 base:1299 --> 1257 
-[I 220717 23:34:05 He2Zi:50] epoch:3 base:1257 --> 1257 
-[I 220717 23:34:05 He2Zi:50] epoch:4 base:1257 --> 1241 
-[I 220717 23:34:06 He2Zi:50] epoch:5 base:1241 --> 1240 
-[I 220717 23:34:06 He2Zi:50] epoch:6 base:1240 --> 1240 
-[I 220717 23:34:07 He2Zi:50] epoch:7 base:1240 --> 1240 
-[I 220717 23:34:08 He2Zi:83] giveup v:509 㕽㤙㨮㮧㯛䅮䌲䒭䖚䗼䙧䚃䡧䢢䤌以似倉傖兜凔凫卣嗆嗚嚑囙场塢壺姒娰嬝嬽岛嵢嵨愴戧扬拟拣捣搶摀旸曛杨梟槍殇汤泤溩滄炀炼烫熏熓熗燛燻爋牄獊獯玚瑦瑲畅
-疡瘡矄砀笖篬篼纁练肠臐艙苡荡蒼蔸薰蘍螐螥蟂袅裊觞謒賶蹌逌鄔鄡醺鉯鎢鑂钖铴飏饧鰞鶬不女都卑既暑碑署者辶爵𠀀𠀈𠀉𠀌𠀍𠀑𠀟𠀳𠁣𠁦𠁧𠁩𠁰𠁱𠁾𠂀𠂂𠂍𠂣𠂼𠃉𠃓𠃢𠄏�𠄙𠇡𠉀𠌥𠍋𠎖𠏧𠏳𠐲𠑜𠑹𠑼𠒂𠒎𠕄𠖁��𠚒𠛖𠝎𠞆𠠈𠤬𠥃𠥐𠥻𠦁𠧠𠨝𠩳𠬫𠭬𠳎𠳧𡀮𡀴𡄀𡆢𡆵𡋬𡏭𡐝𡑩𡒝𡓕𡓽𡕏𡖣𡗒𡚇𡚎𡜏𡠄𡠿𡤂𡭳𡯁𡰣𡰴𡳿𡷊𡸁𡼻𢁹𢁺𢄓��𢉺𢊇𢋵𢌰𢍴𢎗𢎜𢎧𢎱𢏻𢜁𢞬𢣤𢦐𢦘𢮮𢳚𢷠𣀨𣀴𣅲𣋃𣌕𣎰𣒚𣘖𣘛𣝄𣢔𣤝𣤦𣥒𣦶𣪃𣫬𣯙𣴁𤀙𤂏𤋅𤏬𤐁�𤑎𤑕𤒉𤓂𤘍𤚬𤜓𤤃𤤳𤦓𤦡𤨗𤩤𤪠𤰃𤸣𤸼𥃅𥄤𥅤𥆞𥉼𥏲𥙩𥪈𥴻𥵯𥸨𥻲𥻼𦃹𦄓𦆚𦇟𦈮𦉭𦋦𦜸𦞛𦢁𦣩𦥒𦥫𦥺𦧀𦨃𦫯𦫵𦭢𦭩𦲿𦶀𦷿𦺟𦼃𧃭𧒬𧙊𧰣𧰾𧱊𧳱𧽋𧽜𨈏𨈐𨈑𨒝𨔍𨗰𨙃𨙡𨛕𨜾𨭤𨮤𨳇𨳈𨶆𨶇𨷒𨷔𨺅𨺪𩂚𩇦𩇧𩇨𩈺𩌗𩕹𩙱�𩝷𩪱𩮩𩮷𩰊𩰋𪄝𪇑𪈧𪓕𪓝𪙎𪚦𪛉𪛙𪜀𪜭𪟮𪤇𪦔𪦭𪰻𪼧𪾏𫀞𫄸𫈄𫉩𫕜𫖤𫚊𫝖𫠣𫠪𫡆𫣵𫤤𫧙𫩦𫲊𫵵𫸪𫸼𫼟𫽲𫾙𬀘𬂱𬅌��𬋢𬍡𬐂𬐠𬒃𬓸𬔎𬚤𬚭𬛹𬟝𬟾𬠊𬡧𬦅𬦏𬫤𬬡𬬢𬰌𬲰𬵈𬺷𬺻𬻆𬻒𬻘𬻴𬼂𬼄𬼘𬼺𬽡𬿠𬿿𭂄𭂛𭂸𭂺𭆴𭇩𭉅�𭋒𭌨𭔈𭔥𭖀𭖲𭙪𭚡𭜤𭞶𭟇𭣔𭣚𭥟𭨘𭬍𭬝𭬢𭭧𭭪𭮴𭯸𭱎𭱐𭱽𭲞𭲰𭳄𭳵𭴚𭴭𭵄𭸳𭺪𭾊𭾏𮅏𮍌𮍠𮎳𮒮𮓢𮖥𮗙𮚊𮛸𮠕𮡭𮭹乁㠯㨮𰀤𰅜𰆶𰑓𰒥𰓋𰗧𰙌𰝔𰤓𰧕𰨇𰰢𰲞𰷟𱁱
-[I 220717 23:34:08 He2Zi:84] useless k:0
-[I 220717 23:34:08 He2Zi:103] HeZi:93778 Base:1128 
-[I 220717 23:34:08 He2Zi:104]  useless: 0
-[I 220717 23:34:08 He2Zi:106] ('jizi diff', 1128, 0, '')
-[I 220717 23:34:08 He2Zi:122] HeZi build success -> HeZi/He2Yuan.txt  HeZi/YuanZi.txt
-[I 220717 23:34:08 He2Zi:99] JiZi:2365 ChaiZi:94235 YiTiZi:27440
-[I 220717 23:34:09 He2Zi:50] epoch:0 base:10679 --> 3200 
-[I 220717 23:34:10 He2Zi:50] epoch:1 base:3200 --> 2840 
-[I 220717 23:34:10 He2Zi:50] epoch:2 base:2840 --> 2839 
-[I 220717 23:34:11 He2Zi:50] epoch:3 base:2839 --> 2839 
-[I 220717 23:34:11 He2Zi:50] epoch:4 base:2839 --> 2823 
-[I 220717 23:34:12 He2Zi:50] epoch:5 base:2823 --> 2822 
-[I 220717 23:34:12 He2Zi:50] epoch:6 base:2822 --> 2822 
-[I 220717 23:34:13 He2Zi:50] epoch:7 base:2822 --> 2822 
-[I 220717 23:34:13 He2Zi:83] giveup v:501 ⺁⺂⺃⺅⺇⺉⺋⺍⺎⺏⺐⺑⺒⺓⺔⺖⺗⺘⺙⺛⺜⺞⺟⺠⺡⺢⺣⺤⺥⺦⺧⺨⺩⺪⺫⺬⺭⺮⺯⺰⺱⺲⺳⺴⺵⺶⺷⺹⺺⺽⺾⺿⻀⻁⻂⻃⻄⻅⻆⻇⻈⻉⻊⻋⻌⻍⻎⻏⻐⻑⻒
-⻓⻔⻕⻖⻗⻘⻙⻚⻛⻜⻝⻞⻟⻠⻡⻢⻣⻤⻥⻦⻧⻨⻩⻪⻫⻬⻭⻮⻯⻰⻱⻲⻳⼀⼁⼂⼃⼄⼅⼆⼇⼈⼉⼊⼋⼌⼍⼎⼏⼐⼑⼒⼓⼔⼕⼖⼗⼘⼙⼚⼛⼜⼝⼞⼟⼠⼡⼢⼣⼤⼥⼦⼧⼨⼩⼪⼫⼬⼭⼮⼯⼰⼱⼲⼳⼴⼵⼶⼷⼸⼹⼺ 
-⼻⼼⼽⼾⼿⽀⽁⽂⽃⽄⽅⽆⽇⽈⽉⽊⽋⽌⽍⽎⽏⽐⽑⽒⽓⽔⽕⽖⽗⽘⽙⽚⽛⽜⽝⽞⽟⽠⽡⽢⽣⽤⽥⽦⽧⽨⽩⽪⽫⽬⽭⽮⽯⽰⽱⽲⽳⽴⽵⽶⽷⽸⽹⽺⽻⽼⽽⽾⽿⾀⾁⾂⾃⾄⾅⾆⾇⾈⾉⾊⾋⾌⾍⾎⾏⾐⾑⾒⾓⾔⾕⾖ 
-⾗⾘⾙⾚⾛⾜⾝⾞⾟⾠⾡⾢⾣⾤⾥⾦⾧⾨⾩⾪⾫⾬⾭⾮⾯⾰⾱⾲⾳⾴⾵⾶⾷⾸⾹⾺⾻⾼⾽⾾⾿⿀⿁⿂⿃⿄⿅⿆⿇⿈⿉⿊⿋⿌⿍⿎⿏⿐⿑⿒⿓⿔⿕〇㇀㇃㇅㇆㇊㇋㇌㇍㇎㇏㇐㇑㇒㇔㇕㇖㇗㇘㇙㇚㇛㇜㇝㇞㇟㇠㇡㇢ 
-㇣㐃㐆㐧㔔㪳㫈䍏乁乄书亊亪円卍卐孒孓曱女卑既碑辶爵𠀀𠀈𠀌𠀍𠀑𠀟𠁢𠁦𠁧𠁩𠁰𠁱𠁾𠂀𠂂𠂍𠂣𠂼𠃉𠃛𠃢𠄓𠄙𠑹𠒂𠕄𠖁𠙴𠝎𠤬𠥃𠥻𠦁𠩳𡆵𡋬𡗒�𡭔𡭳𡯁𡰴𡳿𢁺𢌰𢎗𢎜𢎧𢎱𢩯𢩴𢮮𣅲𣒚𣗭𣦶𣫬𣴁𤐁𤘍𤤃𤦡𤰃𤽆𥃅𥆞𥝌��𦉭𦣵𦤄𦥒𦥫𦥺𦨃𦫵𦭩𦱫𧺐𨈏𨈐𨈑𨳇𨳈𩂚𩇦𩇧𩇨𩙱𩰊𩰋𪓕𪓝𪚦𪛉𪛙𪛛𪭣𫇧𫝖𫩦𬫬𬺷𬻆𬼁𬼂𬼄𬼘𬽡𭅫𭔥𭖀𭣔𭣚𭨘𭮱𭮴��𭱽𭳄𭺪𮍠𮎳𮒮𮠕乁㠯𰁈𰑓�
-[I 220717 23:34:13 He2Zi:84] useless k:8 ↔⑦↷ユ③コ？④
-[I 220717 23:34:13 He2Zi:103] HeZi:93746 Base:2365 
-[I 220717 23:34:13 He2Zi:104]  useless: 0
-[I 220717 23:34:13 He2Zi:106] ('jizi diff', 2365, 0, '')
-[I 220717 23:34:14 He2Zi:122] HeZi build success -> HeZi/He2Ji.txt  HeZi/JiZi.txt
+[I 230410 01:07:38 He2Zi:79] JiZi:1043 ChaiZi:96638 YiTiZi:24237
+[I 230410 01:07:39 He2Zi:32] epoch:0 base:11180 --> 2566 
+[I 230410 01:07:39 He2Zi:32] epoch:1 base:2566 --> 1082 
+[I 230410 01:07:39 He2Zi:32] epoch:2 base:1082 --> 1037 
+[I 230410 01:07:39 He2Zi:32] epoch:3 base:1037 --> 1037 
+[I 230410 01:07:39 He2Zi:63] giveup v:1410 ⺕㑳㒄㒯㓠㓥㕡㕢㗙㘢㚲㜣㞡㠟㣌㤐㤙㥈㥎㥮㦓㦸㨪㪕㪫㪱㫇㫈㬇㬗㮚㮲㰀㱀㲃㷹㸃㹰㹿㼭㽕㿛㿠䀡䁜䂽䅳䆪䇖䈇䈛䉫䊍䍄
+䐢䑲䑼䓬䔳䕻䖿䚕䛸䜜䜭䝲䡠䦓䨔䩇䩞䪓䪥䪮䬯䮓䯑䳿䴴䴻䵿乩乻佔侊侦侭倬偵儷兤剓叡呫咝咣唢唹啅喚嘫嚟嚸囇囙坫垆垙垱壑壡奌姯婥婯媜媰嬽孋寊寏尡岾帖帧幀幌店廲彲
+怗恍悼惉惦愌愰战扂扵拈挄挡掂掉揁換搊撚攦敁敹於旕晃晄晫曬枮栆栌桄桢档梷棃棜棹楨榥槕橪檆櫦欐毡沾泸洸浈浕淖淤渙湞滉濬灑炶点烬焯煔煥煼熀燃燛犂犓玷珖珰琐琸瑍
+璿瓈痁瘀瘓皝皩皺睝睿矖砧硄碵祯禎秥穲窧站竨笘筜箊篘籭粘絖綽緽縐縨繎繛纚绰罩羄羻耀胋胪胱臩舻苫茪荩菞菸萜蒧蒭蔾藜蛅袩裆襹覘觇觥詀謅貼贴赆赪赬趈趠趨跕踔踮蹨
+躧輄輝轳辉迠逴遉邌邐鄒酈酟釃鉆銧鋽錅鍞鎤鑗钻铛锁閼阏阽雛霑靗韑頕颅颭飐駫騶驪鮎鯬鯲鯴鱺鲇鲈鲺鵫鵹鶵鸝鸬鸶麗黇黋黎黏點黧齺龼驪麗黎撚禎節𠁅𠁲𠁵𠃵𠈎𠈑𠉝𠌩𠏊
+𠏻𠐲𠒗𠒝𠒡𠒥𠒦𠒪𠒫𠒬𠒵𠒸𠒼𠒽𠒿𠓁𠓂𠓃𠓅𠓇𠓉𠓊𠓋𠓌𠓐𠓑𠓒𠓓𠓖𠓚𠕟𠕭𠗀𠗁𠗫𠘍𠙚𠚱𠛤𠛾𠜷𠞃𠟫𠟮𠠍𠠫𠡴𠣱𠣳𠣿𠥛𠥳𠦲𠦷𠦺𠧄𠧇𠧰𠧴𠧵𠧺𠧾𠨋𠪳𠭹𠮔𠮤𠰷𠰸𠱨𠵁𠵗𠵰𠶁𠶧𠶵
+𠸞𠸩𠸿𠹘𠻔𠾆𡁇𡁿𡂻𡆢𡋤𡌐𡌓𡌧𡌽𡍎𡍏𡎞𡎱𡏶𡑋𡓝𡔂𡔉𡕽𡖞𡖡𡖣𡖵𡗭𡙉𡙞𡙦𡚄𡚥𡛸𡝫𡞵𡣣𡥧𡦅𡧑𡪝𡪥𡫟𡫳𡫼𡮫𡯴𡱇𡱘𡴰𡵊𡵋𡷀𡺌𡾡𢀾𢁞𢆴𢇒𢋁𢋟𢎙𢐨𢒛𢒟𢒢𢒪𢓕𢓥𢔄𢔤𢙦𢛂𢛈
+𢛨𢜋𢝭𢢙𢤂𢤑𢤧𢥛𢥜𢥬𢦻𢧗𢧪𢩊𢩶𢪀𢪜𢫘𢮁𢮃𢮸𢰯𢰷𢴃𢵚𢹤𢻛𢼯𢼴𢽆𢽭𢾃𢾓𢾨𢿡𢿭𢿶𣀨𣀷𣂢𣂣𣃲𣃶𣃷𣄒𣄙𣆐𣆤𣆥𣈔𣈘𣉵𣊸𣍊𣍽𣎀𣐗𣗴𣛔𣡃𣡶𣡷𣡼𣢤𣣧𣣸𣦓𣦖𣦻𣨝𣨦𣩚𣪙𣫋𣫜𣭥
+𣮋𣰂𣰮𣰿𣱄𣲁𣴸𣶓𣷀𣸎𣸾𣺥𣻶𣽊𣿚𣿤𤂈𤂏𤂱𤂷𤃒𤅳𤅸𤇀𤇆𤇻𤈛𤉋𤉪𤉽𤊁𤊪𤋒𤋧𤋺𤌉𤌽𤎆𤎉𤏑𤑬𤑰𤑵𤒉𤒓𤓛𤓧𤓫𤕂𤖄𤖊𤘇𤙴𤚙𤚷𤛃𤛼𤛿𤜛𤜩𤝓𤞁𤠮𤡞𤡮𤢅𤤨𤥽𤦥𤦹𤨆𤩅𤩞𤩡𤩰𤪇
+𤪎𤫀𤫟𤭜𤭥𤱳𤲤𤳿𤴗𤴘𤵵𤶏𤷘𤸘𤺱𤽗𤾗𥂂𥃅𥃐𥅤𥆄𥇍𥇞𥈉𥊶𥋽𥌑𥌛𥍄𥍕𥎁𥏥𥕫𥗍𥗷𥙑𥛡𥜨𥜰𥝢𥝨𥟖𥟫𥠅𥠖𥠯𥡎𥢅𥢆𥢔𥢯𥣥𥣵𥣹𥤟𥦺𥧻𥨹𥪥𥭔𥮒𥮠𥮸𥯎𥱱𥲖𥳚𥴄𥴐𥴙𥵙𥵤𥶈𥸗𥹄
+𥹥𥺦𥻆𥻤𥼡𥽝𥽽𥾄𥾪𥿕𦁦𦁨𦄹𦅕𦇊𦊫𦋇𦋐𦋚𦌿𦏧𦒉𦒻𦒾𦓪𦕒𦕤𦖥𦘐𦘸𦚌𦚯𦜰𦝝𦝿𦞔𦟶𦠰𦡿𦣩𦥰𦥿𦨻𦬿𦮵𦰈𦱥𦳋𦵄𦵵𦵽𦷕𦷙𦷝𦹫𦺙𦺩𦻐𦻛𦽗𦾗𦿥𦿺𧃁𧅏𧇲𧇺𧋅𧌡𧌸𧍈𧎑𧎷𧐼𧑇𧒢
+𧓣𧔌𧕯𧖉𧗯𧗽𧙊𧚩𧛸𧝑𧝣𧡑𧡹𧣺𧥑𧥖𧧯𧨳𧨼𧪊𧮪𧮷𧯕𧲸𧳝𧳹𧴇𧵦𧶃𧶸𧷁𧷎𧹍𧾝𧾩𨃊𨃘𨄵𨉁𨉔𨋤𨌬𨎆𨏆𨏽𨐈𨒺𨔁𨔆𨔟𨖏𨗋𨘯𨘵𨛄𨛜𨛫𨛹𨜓𨞠𨞰𨟀𨠵𨤎𨤒𨦸𨨈𨨡𨩉𨪕𨬀𨬏𨮠𨯙𨰣𨱬
+𨵍𨵣𨷽𨹂𨺑𨺟𨻙𨼱𨽄𨽝𨽡𨽩𨽴𨽵𨿧𨿯𨿾𩁟𩄷𩅎𩇓𩉄𩉟𩊠𩌄𩌓𩎉𩐣𩒚𩖝𩘀𩙩𩚋𩜏𩝆𩢬𩤎𩦄𩦅𩧋𩧝𩧠𩩘𩩦𩬑𩭂𩭟𩱈𩱦𩲦𩳁𩳨𩳩𩵿𩶸𩷹𩸢𩹰𩺋𩺥𩻳𩼽𩾤𩿮𪀄𪀯𪂱𪄞𪆈𪇺𪈳𪉜𪋨𪋭𪍆𪍈
+𪍕𪎋𪎪𪏯𪐅𪐇𪑳𪒺𪕐𪕓𪕗𪕾𪖚𪗚𪗦𪘫𪙗𪙚𪜭𪝚𪝽𪞀𪞃𪞆𪞟𪞲𪟂𪟷𪟿𪠀𪠽𪡦𪡽𪣷
+[I 230410 01:07:39 He2Zi:64] useless k:0 
+[I 230410 01:07:39 He2Zi:83] HeZi:95228 Base:941 
+[I 230410 01:07:39 He2Zi:85]  JiZi-Base: 102 𬻆㇍𠁢㇉𠂀𬻫𫞓曱𬂛𭺛亊𦫵㇡㇑𦥮㇂㇥𬼘𢎧㇗㇝𠄙㇠𡗾𪚦𠀀㐃𭴚㇪㇭㇔⿾𠁾㇆乄㇩𬻒㇧𫝖𦥺𪓝𠙴㇏⿿㇄𤦡𢎗㇕㇘𠁧𠁘㇙𬼂
+㇛㇟㇅㇢𤰃𩇧㇌⿽㇁𭐳㇜𠂣㇊㇒⿼𬼄㇫㇎㇃𪛉㇓㇐㇚𠀑𠀟㇣㇈𢎜㇯㇦卍𠤬辶𠃢㇮㇇㇖㇨㇬𠁰㇀𫞪𠁱㇋㇞𫬯𦥫㇤𠀈
+[I 230410 01:07:39 He2Zi:87] Base-JiZi:0
+[I 230410 01:07:40 He2Zi:103] HeZi build success -> HeZi/He2ZiGen.txt  HeZi/ZiGen.txt
 """

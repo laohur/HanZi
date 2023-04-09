@@ -1,4 +1,9 @@
-import collections
+# -*- coding: utf-8 -*-
+
+
+import unicodedata
+from logzero import logger
+
 
 # 独体字
 # http://xh.5156edu.com/page/z2714m8730j18605.html
@@ -11,38 +16,20 @@ duti2="⺀㐁㐃㐄㐅㐆㐧㔾㠯㦮㱐㸦䍏一丁七万丈三上下不与丏�
 
 # https://zidian.qianp.com/danyi.html  383
 duti3="一丁七万丈三上下不与丏丐丑专且世丘丙业东丣两丨丩个丫丬中丰丱串丶丷丸丹为主丿乀乁乃乄久么义之乌乍乎乏乐乑乖乗乘乙乚乛乜九乞也习乡书亅了予亊二于亏云互亓五井亘亚亜亟亡亥亦产人亻儿允兂元入內八其冂内円冉册冖冘农冫几凡凵凸凹出击刀刁刂刃力办勹勺匆匕匚匸十卅升午半卌卍卐卜卝卞卣卤卩卫厂厶又叉及发口史噩囗囟囱土垂士壬夂夊夕大太夫夬夭央失头夹奭女子孑孒孓宀寸小尔尢尤尸尺屯山川州工巨己已巳巴巾干平幺广廴廿开弋弓弗弟彐彑彡彳心忄必戈戉戋戍成户戼手扌才承攵文斗斤斥方无旡日曰曱曲曳更月木朩未末本术朱朿束来東柬欠止歹毋毌母毛氏氐民气水氵氶永求火為爪爲父爿片牙牛牜犬犭玄玉王玍瓜瓦甘生用甩甫田由甲申电畢疋疌疒白皮皿目矢示礻禹禺禾秉穴立竹米粛纟缶罒羊耂而耒耳聿肅肉臣自臼舌舟艮良芈虫血衣衤襾西覀角言訁讠豆豕豸贝赤身車车辛辰辶酉酋重釒钅長镸长门阝隶雨非面革韦韭頁页飛飞飠饣马鬼鸟鹵麦黽龙龜"
-import sys
-sys.path.append('')
-from Bujian import Bujian
 
 if __name__=="__main__":
-    dutizi=''
-    sets=[dutizi1,duti,duti2,Bujian.BuJian0]
-    # sets=[dutizi1,duti2]
-    for i,x in enumerate(sets):
-        print(i,len(x))
-        dutizi+=x
-    freq=collections.Counter(dutizi)
-    dutizi=[ x for x in freq if freq[x]>1 ]
+    dutizi=dutizi1+duti+duti2
+    dutizi=list(set(dutizi))
+    N=''.join(x for x in dutizi if unicodedata.category(x)[0]!='L' )
+    logger.info(N)
+    dutizi= [x for x in dutizi if unicodedata.category(x)[0]=='L' ]
     dutizi.sort()
     print(len(dutizi))
-    with open("Dutizi/Dutizi.txt", "w") as f:
+    with open("DuTiZi/DuTiZi.txt", "w") as f:
         for x in dutizi:
             f.write(x+'\n')
 
 """
-⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻⿼⿽⿾⿿
-⼀⼁⼂⼃⼄⼅⼆⼇⼈⼉⼊⼋⼌⼍⼎⼏⼐⼑⼒⼓⼔⼕⼖⼗⼘⼙⼚⼛⼜⼝⼞⼟⼠⼡⼢⼣⼤⼥⼦⼧⼨⼩⼪⼫⼬⼭⼮⼯⼰⼱⼲⼳⼴⼵⼶⼷⼸⼹⼺⼻⼼⼽⼾⼿⽀⽁⽂⽃⽄⽅⽆⽇⽈⽉⽊⽋⽌⽍⽎⽏⽐⽑⽒⽓ 
-⽔⽕⽖⽗⽘⽙⽚⽛⽜⽝⽞⽟⽠⽡⽢⽣⽤⽥⽦⽧⽨⽩⽪⽫⽬⽭⽮⽯⽰⽱⽲⽳⽴⽵⽶⽷⽸⽹⽺⽻⽼⽽⽾⽿⾀⾁⾂⾃⾄⾅⾆⾇⾈⾉⾊⾋⾌⾍⾎⾏⾐⾑⾒⾓⾔⾕⾖⾗⾘⾙⾚⾛⾜⾝⾞⾟⾠⾡⾢⾣⾤⾥⾦⾧ 
-⾨⾩⾪⾫⾬⾭⾮⾯⾰⾱⾲⾳⾴⾵⾶⾷⾸⾹⾺⾻⾼⾽⾾⾿⿀⿁⿂⿃⿄⿅⿆⿇⿈⿉⿊⿋⿌⿍⿎⿏⿐⿑⿒⿓⿔⿕⿖⿗⿘⿙⿚⿛⿜⿝⿞⿟
-⺀⺁⺂⺃⺄⺅⺆⺇⺈⺉⺊⺋⺌⺍⺎⺏⺐⺑⺒⺓⺔⺕⺖⺗⺘⺙⺚⺛⺜⺝⺞⺟⺠⺡⺢⺣⺤⺥⺦⺧⺨⺩⺪⺫⺬⺭⺮⺯⺰⺱⺲⺳⺴⺵⺶⺷⺸⺹⺺⺻⺼⺽⺾⺿⻀⻁⻂⻃⻄⻅⻆⻇⻈⻉⻊⻋⻌⻍⻎⻏⻐⻑⻒⻓
-⻔⻕⻖⻗⻘⻙⻚⻛⻜⻝⻞⻟⻠⻡⻢⻣⻤⻥⻦⻧⻨⻩⻪⻫⻬⻭⻮⻯⻰⻱⻲⻳⻴⻵⻶⻷⻸⻹⻺⻻⻼⻽⻾⻿
-㄀㄁㄂㄃㄄ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦㄧㄨㄩㄪㄫㄬㄭㄮㄯ
-ㆠㆡㆢㆣㆤㆥㆦㆧㆨㆩㆪㆫㆬㆭㆮㆯㆰㆱㆲㆳㆴㆵㆶㆷㆸㆹㆺㆻㆼㆽㆾㆿ
-　、。〃〄々〆〇〈〉《》「」『』【】〒〓〔〕〖〗〘〙〚〛〜〝〞〟〠〡〢〣〤〥〦〧〨〩〪〭〮〯〫〬〰〱〲〳〴〵〶〷〸〹〺〻〼〽〾〿
-0 280
-1 725
-2 403
-3 2654
-740
+[I 230410 00:14:26 dutizi:24] �⺀
+811
 """
