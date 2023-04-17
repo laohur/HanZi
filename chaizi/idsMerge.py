@@ -1,124 +1,113 @@
 # -*- coding: utf-8 -*-
 
-import random,unicodedata
-import collections
+import random
+import unicodedata
+import re
 
 from logzero import logger
 
-JieGou = "〾⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻"
-JieGou1 = "〾"
+JieGou1 = "〾↔↷"
 JieGou2 = "⿰⿱⿴⿵⿶⿷⿸⿹⿺⿻"
 JieGou3 = "⿲⿳"
+JieGou = JieGou1+JieGou2+JieGou3
 
 stars1 = 'αℓ↔↷①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑲△'
 stars1 = set(stars1)
 stars2 = '𠦮𡋬𡰣𢚎𤣩𨪐𬼄𭔥乁'
-star = '乌'
+star = '𤆚'
 
-
-def trim1(seq,i,l):
-    s=seq[:i]
-    if i+l<len(seq):
-        s+=seq[i+l:]
-    return s
-
-def trim_ids(seq):
-    if len(seq)<=1:
-        return seq
-    for i in range(len(seq)-2,-1,-1):
-        x=seq[i]
-        if x not in JieGou:
-            continue
-        if x in JieGou1:
-            s=trim1(seq,i,2)
-        elif x in JieGou2:
-            s=trim1(seq,i,3)
-        elif x in JieGou3:
-            s=trim1(seq,i,4)
-        return s
-    return seq
 
 def valid_ids(seq):
-        
-    if len(seq)<=1:
+    if len(seq) <= 2:
         return False
-    for x in seq:
-        if ord(x)<=128:
-            return False
-        if x not in '〇'+JieGou and unicodedata.category(x)[0]!='L':
-            return 0
-
-    s=seq[:]
-    for i in range(len(seq)//2):
-        s1=trim_ids(s)
-        if not s1:
-            return True
-        if len(s)==len(s1):
-            return False
-        s=s1
+    S = seq+' '
+    flag = '㇣'
+    for i in range(len(S)-2, -1, -1):
+        x = S[i]
+        if x in JieGou1:
+            S = S[:i]+'㇣'+S[i+2:]
+        elif x in JieGou2:
+            S = S[:i]+'㇣'+S[i+3:]
+        elif x in JieGou3:
+            S = S[:i]+'㇣'+S[i+4:]
+        else:
+            if x not in '〇'+JieGou and unicodedata.category(x)[0] != 'L':
+                return False
+    if S == '㇣ ':
+        return True
     return False
 
 # U+4E0E	与	⿹②一[GTKV]	⿻②一[J]
+
+
 def readIds(path="ChaiZi/ids.txt"):
     doc = []
     for line in open(path):
         if not line or not line.startswith('U+'):
             continue
         t = line.strip().split('\t')
-        if len(t)<3:
+        if len(t) < 3:
             continue
-        k=t[1]
-        if len(k)!=1 or ord(k)<128:
-            continue        
-        v=[  x for x in t[2:]  if valid_ids(x)  ]
+        k = t[1]
+        if len(k) != 1 or ord(k) < 128:
+            continue
+        # v=[  x for x in t[2:]  if valid_ids(x)  ]
+        v = t[2:]
         if k == star:
             logger.info(t)
         if v:
-            doc.append((k,v))
-    logger.info((path,len(doc), random.choice(doc)))
+            doc.append((k, v))
+    logger.info((path, len(doc), random.choice(doc)))
     return doc
 
 # 丹	⿴⿻⺆一丶(.);⿴⿻冂一丶(pd);⿴⿻⺆一丨(q0662.);⿴⿻冂一丨(q0662s)
+
+
 def readLv2(path="ChaiZi/ids_lv2.txt"):
     doc = []
-    for l in open(path) :
+    for l in open(path):
         t = l.strip().split('\t')
-        if len(t)<2 :
+        if len(t) < 2:
             continue
-        k=t[0]
-        if len(k)!=1 or ord(k)<128:
+        k = t[0]
+        if len(k) != 1 or ord(k) < 128:
             continue
-        v=[  x.split('(')[0] for x in t[1].split(';')    ]
-        v=[  x for x in v  if valid_ids(x)  ]
+        v = [x.split('(')[0] for x in t[1].split(';')]
+        # v=[  x for x in v  if valid_ids(x)  ]
         if k == star:
             logger.info(t)
         if not v:
             continue
         if v:
-            doc.append((k,v))
-    logger.info((path,len(doc), random.choice(doc)))
+            doc.append((k, v))
+    logger.info((path, len(doc), random.choice(doc)))
     return doc
 
 # U+4E4C	乌	⿹&CDP-89DE;一
+
+
 def readAll(path="ChaiZi/IdsAll.txt"):
     doc = []
     for l in open(path).read().splitlines():
         l = l.strip()
         t = l.split("\t")
-        if len(t)!=3:
+        if len(t) != 3:
             continue
-        k=t[1]
-        if len(k)!=1 or ord(k)<128:
-            continue        
-        v=[  x for x in t[2].split(';') if valid_ids(x)  ]
+        k = t[1]
+        if len(k) != 1 or ord(k) < 128:
+            continue
+        # v=[  x for x in t[2].split(';') if valid_ids(x)  ]
+        v = [x for x in t[2].split(';')]
         if k == star:
             logger.info(t)
         if v:
             doc.append((k, v))
-    logger.info((path,len(doc), random.choice(doc)))
+    logger.info((path, len(doc), random.choice(doc)))
     return doc
 
 # 㕟	⿰⿱⺊𠕁又	喟
+
+
 def readZixing(path="ChaiZi/ZiXing.txt"):
     doc = []
     for l in open(path).read().splitlines():
@@ -126,53 +115,55 @@ def readZixing(path="ChaiZi/ZiXing.txt"):
         if not l:
             continue
         t = l.split("\t")
-        if len(t)<2:
+        if len(t) < 2:
             continue
-        k=t[0]
-        if len(k)!=1 or ord(k)<128:
-            continue        
-        v=[  x for x in t[1:]  if valid_ids(x)  ]
+        k = t[0]
+        if len(k) != 1 or ord(k) < 128:
+            continue
+        # v=[  x for x in t[1:]  if valid_ids(x)  ]
+        v = t[1:]
         if k == star:
             logger.info(t)
         if v:
             doc.append((k, v))
-    logger.info((path,len(doc), random.choice(doc)))
+    logger.info((path, len(doc), random.choice(doc)))
     return doc
 
 
 def merge():
-    doc=[]
-    doc+=readIds()
-    doc+=readLv2()
-    doc+=readAll()
-    doc+=readZixing()    
+    doc = []
+    doc += readIds()
+    doc += readLv2()
+    doc += readAll()
+    doc += readZixing()
 
     store = {}
-    for k,v in doc:
+    for k, v in doc:
         if k not in store:
-            store[k]=[]
-        store[k]+=v
+            store[k] = []
+        store[k] += v
 
-    doc1=[]
-    for k,v in store.items():
-        v.sort(key=lambda x: (len(x),-sum(ord(x) for x in x[1]) ))
-        doc1.append((k,v[0]))
-        if k==star:
+    doc1 = []
+    for k, vs in store.items():
+        if k == star:
+            R = valid_ids(vs[0])
             logger.info(v)
+        v = [x for x in vs if valid_ids(x)]
+        v.sort(key=lambda x: (len(x), -sum(ord(x) for x in x[1])))
+        if v:
+            doc1.append((k, v[0]))
 
-    keys=set(''.join(x[0] for x in doc1 ))
-    values=set(''.join(x[1] for x in doc1 ))
+    keys = set(''.join(x[0] for x in doc1))
+    values = set(''.join(x[1] for x in doc1))
     logger.info(
         f"keys:{len(keys)} values:{len(values)}  k-v:{len(keys-values)} v-k:{len(values-keys)} {''.join(values-keys)}")
 
-    tgt="ChaiZi/ChaiZi.txt"
-    with open(tgt,"w") as f:
-        for k,v in doc1:
+    tgt = "ChaiZi/ChaiZi.txt"
+    with open(tgt, "w") as f:
+        for k, v in doc1:
             f.write(f"{k}\t{v}\n")
 
-    logger.info((tgt,len(doc1), random.choice(doc1)))
-
-
+    logger.info((tgt, len(doc1), random.choice(doc1)))
 
     return store
 
@@ -181,7 +172,7 @@ if __name__ == "__main__":
 
     logger.info(valid_ids('⿱艹⿳⿲止自巳八夂'))
 
-    store=merge()
+    store = merge()
 
 
 """
